@@ -1,4 +1,4 @@
-# AWS Compute resources for Kubernetes Cluster: Master and Worker Nodes
+# AWS Compute resources for Ansible
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -42,7 +42,7 @@ resource "aws_instance" "control_node" {
   provisioner "remote-exec" {
     inline = [
         "chmod a+x /home/ubuntu/ansible_EE_dependencies.sh",
-        "sudo bash /home/ubuntu/ansible_EE_dependencies.sh ansible_EE",
+        "sudo bash /home/ubuntu/ansible_EE_dependencies.sh ansible_EE"
     ]  
   }
 
@@ -58,7 +58,7 @@ resource "aws_instance" "control_node" {
 
 resource "aws_security_group" "control-node-sg" {
   name        = "allow_traffic_master"
-  description = "Allow inbound  and outbound traffic to master node"
+  description = "Allow inbound and outbound traffic to master node"
   vpc_id      = var.vpc_id_instance
 
   tags = {
@@ -79,6 +79,15 @@ resource "aws_vpc_security_group_ingress_rule" "contol-allow_ssh_ipv4" {
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "contol-allow_ping_ipv4" {
+  description       = "Allow ICMP from anywhere"
+  security_group_id = aws_security_group.control-node-sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 8
+  ip_protocol       = "icmp"
+  to_port           = 0
 }
 
 ################################################################ Worker nodes ########################################################################
@@ -125,6 +134,15 @@ resource "aws_vpc_security_group_ingress_rule" "worker-allow_ssh_ipv4" {
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "worker-allow_ping_ipv4" {
+  description       = "Allow ICMP from anywhere"
+  security_group_id = aws_security_group.worker-node-sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 8
+  ip_protocol       = "icmp"
+  to_port           = 0
 }
 
 ################################################################ SSH Key Pair ###############################################################
