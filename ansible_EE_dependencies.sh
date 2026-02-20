@@ -39,10 +39,10 @@ python3 -m venv "$1"
 echo "activating python virtual environment for ansible EE build..."
 source "$1/bin/activate"
 
-# install ansible-navigator
-echo "installing ansible-navigator..."
-pip install ansible-navigator
-
 # install ansible-builder
 echo "installing ansible-builder..."
 pip install ansible-builder
+
+# install ansible-navigator
+echo "installing ansible-navigator..."
+pip install ansible-navigator
