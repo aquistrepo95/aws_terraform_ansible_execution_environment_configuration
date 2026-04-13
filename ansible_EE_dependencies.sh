@@ -46,3 +46,12 @@ pip install ansible-builder
 # install ansible-navigator
 echo "installing ansible-navigator..."
 pip install ansible-navigator
+
+# change owner of python venv to current user
+echo "changing owner for python venv..."
+sudo chown -R ubuntu:ubuntu $1
+
+# add the ubuntu user to the docker group
+echo "adding ubuntu user to docker group..."
+sudo usermod -aG docker ubuntu
+
