@@ -12,6 +12,7 @@
 * Python venv
 * Docker: Docker engine
 * BASH
+* Ansible
 
 ## This section will describe: how to deploy the infrastructure on AWS.
 * Prequisite: Terraform is installed, and AWS CLI is installed and configured with keys.
@@ -32,14 +33,19 @@
 * ssh to the master/control node.
   ```
   $ ssh ubuntu@$(terraform output -raw instance_public_ip_master) -i ssh_keys -v
-  ``` 
-
-* Set permission for User(Ubuntu) to access the Docker daemon socket.
   ```
-  $ sudo usermod -aG docker $USER
-  $ getent group docker
-  $ awk -F':' '/docker/{print $4}' /etc/group
+* Generate ssh keys for the control node.
   ```
+  $ ssh-keygen -C "your_email@example.com" -f ssh_keys
+  ```    
+* Add private key to ssh-agent.
+  ```
+  $ eval $(ssh-agent -s)
+  $ ssh-add <path to private key>
+  $ ssh-add -l  NB: verify that the key has been added to ssh-agent
+  ```
+* Add the public key for the control node to the other remote host i.e the hosts that Ansible would be configuring.
+* Add keys to ~/.ssh/authorized_keys file on the remote hosts.
   
 * Activate Python venv: This allows you to run Python-dependent software without interfering with the system's Python installation.
   ```
